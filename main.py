@@ -177,11 +177,56 @@ def draw_peice(peice_num, index):
         screen.blit(peice, (60*rank,60*file,30,30))
 
 def handleMouse():
+    #for getting the file letters
+    alphabet="abcdefghijklmnopqrstuvwxyz"
+    file_letters = {
+        1 : 'a',
+        2 : 'b',
+        3 : 'c',
+        4 : 'd',
+        5 : 'e',
+        6 : 'f',
+        7 : 'g',
+        8 : 'h'
+    }
+
+    alpha_dict = {letter:idx for idx, letter in enumerate(alphabet)}
+
+    #Useful :)
     mouseX = pygame.mouse.get_pos()[0]
     mouseY = pygame.mouse.get_pos()[1]
+
     transparent_rect(60*int(mouseX/60),60*int(mouseY/60),60,60,(255,255,0),128)
     if pygame.mouse.get_pressed() == (1, 0, 0):
-        print(int(mouseX/60),int(mouseY/60))
+        rank = int(mouseY/60) + 1
+        file = int(mouseX/60) + 1
+        index = (8*file) + rank
+        print("click info -> file: ", file_letters[file]," rank: ", int(translate(rank,8,1,1,8))," index: ", index)
+
+        """
+
+        Broken ATM :(
+
+        if(Board.squares[index] != 0):
+            squareOpen = False
+        else:
+            squareOpen = True
+
+        print("square taken?", squareOpen)
+        """
+
+
+def translate(value, leftMin, leftMax, rightMin, rightMax):
+    # Figure out how 'wide' each range is
+    leftSpan = leftMax - leftMin
+    rightSpan = rightMax - rightMin
+
+    # Convert the left range into a 0-1 range (float)
+    valueScaled = float(value - leftMin) / float(leftSpan)
+
+    # Convert the 0-1 range into a value in the right range.
+    return rightMin + (valueScaled * rightSpan)
+
 
 def transparent_rect(x,y,w,h,color,alpha):
     s = pygame.Surface((w,h))  # the size of your rect
