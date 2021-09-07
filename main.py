@@ -181,19 +181,13 @@ def handleMouse():
     if pygame.mouse.get_pressed() == (1, 0, 0):
         rank = int(mouseY/60) + 1
         file = int(mouseX/60) + 1
-        index = (8*file) + rank
+        index = (8*rank) + file - 9
         print("click info -> file: ", Board.file_letters[file]," rank: ", int(translate(rank,8,1,1,8))," index: ", index)
-
-        """
-        Broken ATM :(
-
+        
         if(Board.squares[index] != 0):
-            squareOpen = False
+            print("square taken")
         else:
-            squareOpen = True
-
-        print("square taken?", squareOpen)
-        """
+            print("square not taken")
 
 #Method for revere mapping arrays of values.
 def translate(value, leftMin, leftMax, rightMin, rightMax):
