@@ -6,7 +6,7 @@ pygame.display.set_caption('Chess Engine :)')
 
 screen = pygame.display.set_mode((480,480))
 
-def mainLoop():
+def main_loop():
     board = Board()
     board.peice_setup("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     running = True
@@ -38,6 +38,16 @@ class Board():
     #
     squares = [0] * 64
 
+    file_letters = {
+        1 : 'a',
+        2 : 'b',
+        3 : 'c',
+        4 : 'd',
+        5 : 'e',
+        6 : 'f',
+        7 : 'g',
+        8 : 'h'
+    }
 
     def __init__(self):
         dark_color = (50,50,50)
@@ -113,6 +123,22 @@ class Peice():
     white = 8
     black = 16
 
+    peice_dict = {
+        20: 'images/bRook.png',
+        19: 'images/bKnight.png',
+        18: 'images/bBishop.png',
+        21: 'images/bQueen.png',
+        22: 'images/bKing.png',
+        17: 'images/bPawn.png',
+         9:  'images/wPawn.png',
+        12: 'images/wRook.png',
+        11: 'images/wKnight.png',
+        10: 'images/wBishop.png',
+        13: 'images/wKing.png',
+        14: 'images/wQueen.png',
+        0:  'none'
+    }
+
 def print_board(board,rowsize):
     print()
     print("Current game board: ")
@@ -128,25 +154,8 @@ def draw_peice(peice_3bits,color_num, index):
     file = int(index/8)
     rank = int(index%8)
 
-
-    peice_dict = {
-            20: 'images/bRook.png',
-            19: 'images/bKnight.png',
-            18: 'images/bBishop.png',
-            21: 'images/bQueen.png',
-            22: 'images/bKing.png',
-            17: 'images/bPawn.png',
-             9:  'images/wPawn.png',
-            12: 'images/wRook.png',
-            11: 'images/wKnight.png',
-            10: 'images/wBishop.png',
-            13: 'images/wKing.png',
-            14: 'images/wQueen.png',
-            0: 'none'
-    }
-
     if peice_num != 0:
-        peice = pygame.image.load(peice_dict[peice_num])
+        peice = pygame.image.load(Peice.peice_dict[peice_num])
         peice = pygame.transform.scale(peice, (60, 60))
         screen.blit(peice, (60*rank,60*file,30,30))
 
@@ -155,56 +164,27 @@ def draw_peice(peice_num, index):
     file = int(index/8)
     rank = int(index%8)
 
-    peice_dict = {
-            20: 'images/bRook.png',
-            19: 'images/bKnight.png',
-            18: 'images/bBishop.png',
-            21: 'images/bQueen.png',
-            22: 'images/bKing.png',
-            17: 'images/bPawn.png',
-             9:  'images/wPawn.png',
-            12: 'images/wRook.png',
-            11: 'images/wKnight.png',
-            10: 'images/wBishop.png',
-            13: 'images/wKing.png',
-            14: 'images/wQueen.png',
-            0: 'none'
-    }
-
     if peice_num != 0:
-        peice = pygame.image.load(peice_dict[peice_num])
+        peice = pygame.image.load(Peice.peice_dict[peice_num])
         peice = pygame.transform.scale(peice, (60, 60))
         screen.blit(peice, (60*rank,60*file,30,30))
 
 def handleMouse():
-    #for getting the file letters
-    alphabet="abcdefghijklmnopqrstuvwxyz"
-    file_letters = {
-        1 : 'a',
-        2 : 'b',
-        3 : 'c',
-        4 : 'd',
-        5 : 'e',
-        6 : 'f',
-        7 : 'g',
-        8 : 'h'
-    }
-
-    alpha_dict = {letter:idx for idx, letter in enumerate(alphabet)}
-
     #Useful :)
     mouseX = pygame.mouse.get_pos()[0]
     mouseY = pygame.mouse.get_pos()[1]
 
-    transparent_rect(60*int(mouseX/60),60*int(mouseY/60),60,60,(255,255,0),128)
+    #Yellow mouseb box
+    if(pygame.mouse.get_focused() != False): 
+        transparent_rect(60*int(mouseX/60),60*int(mouseY/60),60,60,(255,255,0),128)
+
     if pygame.mouse.get_pressed() == (1, 0, 0):
         rank = int(mouseY/60) + 1
         file = int(mouseX/60) + 1
         index = (8*file) + rank
-        print("click info -> file: ", file_letters[file]," rank: ", int(translate(rank,8,1,1,8))," index: ", index)
+        print("click info -> file: ", Board.file_letters[file]," rank: ", int(translate(rank,8,1,1,8))," index: ", index)
 
         """
-
         Broken ATM :(
 
         if(Board.squares[index] != 0):
@@ -215,7 +195,7 @@ def handleMouse():
         print("square taken?", squareOpen)
         """
 
-
+#Method for revere mapping arrays of values.
 def translate(value, leftMin, leftMax, rightMin, rightMax):
     # Figure out how 'wide' each range is
     leftSpan = leftMax - leftMin
@@ -227,18 +207,18 @@ def translate(value, leftMin, leftMax, rightMin, rightMax):
     # Convert the 0-1 range into a value in the right range.
     return rightMin + (valueScaled * rightSpan)
 
-
+#Pygame does not have a way to easily make transparent squares, this is my solution.
 def transparent_rect(x,y,w,h,color,alpha):
     s = pygame.Surface((w,h))  # the size of your rect
     s.set_alpha(alpha)                # alpha level
     s.fill(color)           # this fills the entire surface
     screen.blit(s, (x,y))
 
-def main():
-    mainLoop()
 
-main()
 
+
+#Call main loop
+main_loop()
 
 # Done! Time to quit.
 pygame.quit()
