@@ -6,13 +6,10 @@ pygame.display.set_caption('Chess Engine :)')
 
 screen = pygame.display.set_mode((480,480))
 
-
-
 def mainLoop():
     board = Board()
-    board.peice_setup("rnbqkbnr/pppppppp/5P2/3P4/2Q1PBR1/8/PPPP3P/RNB1K1N1")
+    board.peice_setup("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     running = True
-
 
     while running:
         # Did the user click the window close button?
@@ -21,6 +18,7 @@ def mainLoop():
                 running = False
         
         board.draw_board()
+        handleMouse()
 
         count = 0
         for square in board.squares:
@@ -178,36 +176,18 @@ def draw_peice(peice_num, index):
         peice = pygame.transform.scale(peice, (60, 60))
         screen.blit(peice, (60*rank,60*file,30,30))
 
-"""
-#This function takes the name of an image to load. It also optionally takes an argument it can use to set a colorkey for the image. A colorkey is used in graphics to represent a color of the image that is transparent.
-def load_image(name, colorkey=None):
-    fullname = os.path.join('data', name)
-    try:
-        image = pygame.image.load(fullname)
-    except pygame.error as message:
-        print('Cannot load image:', name)
-        raise SystemExit(message)
-    image = image.convert()
-    if colorkey is not None:
-        if colorkey is -1:
-            colorkey = image.get_at((0, 0))
-        image.set_colorkey(colorkey, RLEACCEL)
-    return image, image.get_rect()
+def handleMouse():
+    mouseX = pygame.mouse.get_pos()[0]
+    mouseY = pygame.mouse.get_pos()[1]
+    transparent_rect(60*int(mouseX/60),60*int(mouseY/60),60,60,(255,255,0),128)
+    if pygame.mouse.get_pressed() == (1, 0, 0):
+        print(int(mouseX/60),int(mouseY/60))
 
-#Next is the function to load a sound file. The first thing this function does is check to see if the pygame.mixerpygame module for loading and playing sounds module was imported correctly. If not, it returns a small class instance that has a dummy play method. 
-def load_sound(name):
-    class NoneSound:
-        def play(self): pass
-    if not pygame.mixer:
-        return NoneSound()
-    fullname = os.path.join('data', name)
-    try:
-        sound = pygame.mixer.Sound(fullname)
-    except pygame.error as message:
-        print('Cannot load sound:', fullname)
-        raise SystemExit(message)
-    return sound
-"""
+def transparent_rect(x,y,w,h,color,alpha):
+    s = pygame.Surface((w,h))  # the size of your rect
+    s.set_alpha(alpha)                # alpha level
+    s.fill(color)           # this fills the entire surface
+    screen.blit(s, (x,y))
 
 def main():
     mainLoop()
