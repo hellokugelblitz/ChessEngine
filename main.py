@@ -10,8 +10,10 @@ screen = pygame.display.set_mode((480,480))
 
 def mainLoop():
     board = Board()
-
+    board.peice_setup("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     running = True
+
+
     while running:
         # Did the user click the window close button?
         for event in pygame.event.get():
@@ -20,12 +22,15 @@ def mainLoop():
         
         board.draw_board()
 
+        draw_peice(Peice.knight,Peice.black, 0)
+
+
+
         # Draw a solid blue circle in the center
         #pygame.draw.circle(screen, (0, 0, 255), (250, 250), 75)
 
         # Flip the display
         pygame.display.flip()
-
 
 class Board():
     dark_color = (195,160,130)
@@ -33,6 +38,7 @@ class Board():
 
     #
     squares = [0] * 64
+
 
     def __init__(self):
         dark_color = (50,50,50)
@@ -45,29 +51,64 @@ class Board():
             for rank in range(0,8):
                 if (file+rank)%2 != 0:
                     pygame.draw.rect(screen, self.dark_color,  pygame.Rect(file*60, rank*60, 60, 60))
+        
 
-        pygame.display.flip()
+        
+        
+        
 
-    def peice_setup(fen):
+    def peice_setup(self, fen):
         #Starts from top left, lowercase = black, uppercase = white, / = new line
         #rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
         
+        fen_board = fen.split(' ', 1)
+        fen = fen_board[0]
 
-        print("board setup")
+        peice_dict = {
+            'p': Peice.pawn,
+            'b': Peice.bishop,
+            'n': Peice.knight,
+            'r': Peice.rook,
+            'q': Peice.queen,
+            'k': Peice.king,
+        }
+
+        char_fen = list(fen)
+        print(char_fen)
+
+
+        for character in range(0,len(char_fen)):
+            crnt_char = char_fen[character]
+            
+            if crnt_char == '/':
+                character
+
+        file = 0
+        rank = 0
+
+        for character in fen:
+            if character == '/':
+                file = 0
+                rank += 1
+                continue
+            
+            if character.isnumeric():
+                spaces = int(character)
+                file += spaces
+                continue
+
+            peice = peice_dict[character.lower()]
+            peice_color = 8 if str. isupper(character) else 16
+            self.squares[rank*8+file] = peice | peice_color
+            file += 1
+        
+
+        #self.squares[63] = Peice.pawn | Peice.black
+
+        #print(self.squares)
+        print_board(self.squares,8)
     
-
-class Peice(pygame.sprite.Sprite):
-    
-    #0 - nothing
-    #1 - pawn
-    #2 - bishop
-    #3 - knight
-    #4 - rook
-    #5 - queen
-    #6 - king
-    #8 - white
-    #16 - black
-
+class Peice():
     nothing = 0
     pawn = 1
     bishop = 2
@@ -79,13 +120,38 @@ class Peice(pygame.sprite.Sprite):
     black = 16
 
     peice_number = 0
-    
-    def __init__(self, peice_number):
-        pygame.sprite.Sprite.__init__(self)  # call Sprite initializer
-        self.peice_number = peice_number
 
 
+def print_board(board,rowsize):
+    print()
+    print("Current game board: ")
+    for file in range(0,rowsize):
+        for rank in range(0,rowsize):
+            print(board[(file*8)+rank], end=" ")
+        print()
 
+def draw_peice(peice_3bits,color_num, index):
+
+    peice_num = peice_3bits | color_num
+
+    peice_dict = {
+            20: 'images/bRook.png',
+            19: 'images/bKnight.png',
+            18: 'images/bBishop.png',
+            21: 'images/bQueen.png',
+            22: 'images/bKing.png',
+            17: 'images/bPawn.png',
+             9:  'images/wPawn.png',
+            12: 'images/wRook.png',
+            11: 'images/wKnight.png',
+            10: 'images/wBishop.png',
+            13: 'images/wKing.png',
+            14: 'images/wQueen.png',
+    }
+
+    peice = pygame.image.load(peice_dict[peice_num])
+    peice = pygame.transform.scale(peice, (60, 60))
+    screen.blit(peice, (0,0,30,30))
 
 """
 #This function takes the name of an image to load. It also optionally takes an argument it can use to set a colorkey for the image. A colorkey is used in graphics to represent a color of the image that is transparent.
