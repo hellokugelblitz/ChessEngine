@@ -10,7 +10,7 @@ screen = pygame.display.set_mode((480,480))
 
 def mainLoop():
     board = Board()
-    board.peice_setup("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+    board.peice_setup("rnbqkbnr/pppppppp/5P2/3P4/2Q1PBR1/8/PPPP3P/RNB1K1N1")
     running = True
 
 
@@ -22,9 +22,10 @@ def mainLoop():
         
         board.draw_board()
 
-        draw_peice(Peice.knight,Peice.black, 0)
-
-
+        count = 0
+        for square in board.squares:
+            draw_peice(square, count)
+            count += 1
 
         # Draw a solid blue circle in the center
         #pygame.draw.circle(screen, (0, 0, 255), (250, 250), 75)
@@ -51,10 +52,6 @@ class Board():
             for rank in range(0,8):
                 if (file+rank)%2 != 0:
                     pygame.draw.rect(screen, self.dark_color,  pygame.Rect(file*60, rank*60, 60, 60))
-        
-
-        
-        
         
 
     def peice_setup(self, fen):
@@ -102,7 +99,6 @@ class Board():
             self.squares[rank*8+file] = peice | peice_color
             file += 1
         
-
         #self.squares[63] = Peice.pawn | Peice.black
 
         #print(self.squares)
@@ -119,9 +115,6 @@ class Peice():
     white = 8
     black = 16
 
-    peice_number = 0
-
-
 def print_board(board,rowsize):
     print()
     print("Current game board: ")
@@ -133,6 +126,10 @@ def print_board(board,rowsize):
 def draw_peice(peice_3bits,color_num, index):
 
     peice_num = peice_3bits | color_num
+
+    file = int(index/8)
+    rank = int(index%8)
+
 
     peice_dict = {
             20: 'images/bRook.png',
@@ -147,11 +144,39 @@ def draw_peice(peice_3bits,color_num, index):
             10: 'images/wBishop.png',
             13: 'images/wKing.png',
             14: 'images/wQueen.png',
+            0: 'none'
     }
 
-    peice = pygame.image.load(peice_dict[peice_num])
-    peice = pygame.transform.scale(peice, (60, 60))
-    screen.blit(peice, (0,0,30,30))
+    if peice_num != 0:
+        peice = pygame.image.load(peice_dict[peice_num])
+        peice = pygame.transform.scale(peice, (60, 60))
+        screen.blit(peice, (60*rank,60*file,30,30))
+
+def draw_peice(peice_num, index):
+
+    file = int(index/8)
+    rank = int(index%8)
+
+    peice_dict = {
+            20: 'images/bRook.png',
+            19: 'images/bKnight.png',
+            18: 'images/bBishop.png',
+            21: 'images/bQueen.png',
+            22: 'images/bKing.png',
+            17: 'images/bPawn.png',
+             9:  'images/wPawn.png',
+            12: 'images/wRook.png',
+            11: 'images/wKnight.png',
+            10: 'images/wBishop.png',
+            13: 'images/wKing.png',
+            14: 'images/wQueen.png',
+            0: 'none'
+    }
+
+    if peice_num != 0:
+        peice = pygame.image.load(peice_dict[peice_num])
+        peice = pygame.transform.scale(peice, (60, 60))
+        screen.blit(peice, (60*rank,60*file,30,30))
 
 """
 #This function takes the name of an image to load. It also optionally takes an argument it can use to set a colorkey for the image. A colorkey is used in graphics to represent a color of the image that is transparent.
