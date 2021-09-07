@@ -124,18 +124,18 @@ class Peice():
     black = 16
 
     peice_dict = {
-        20: 'images/bRook.png',
-        19: 'images/bKnight.png',
-        18: 'images/bBishop.png',
-        21: 'images/bKing.png',
-        22: 'images/bQueen.png',
-        17: 'images/bPawn.png',
-         9:  'images/wPawn.png',
-        12: 'images/wRook.png',
-        11: 'images/wKnight.png',
-        10: 'images/wBishop.png',
-        13: 'images/wKing.png',
-        14: 'images/wQueen.png',
+        20: 'bRook',
+        19: 'bKnight',
+        18: 'bBishop',
+        21: 'bKing',
+        22: 'bQueen',
+        17: 'bPawn',
+         9:  'wPawn',
+        12: 'wRook',
+        11: 'wKnight',
+        10: 'wBishop',
+        13: 'wKing',
+        14: 'wQueen',
         0:  'none'
     }
 
@@ -155,7 +155,8 @@ def draw_peice(peice_3bits,color_num, index):
     rank = int(index%8)
 
     if peice_num != 0:
-        peice = pygame.image.load(Peice.peice_dict[peice_num])
+        directory = 'images/' + Peice.peice_dict[peice_num] + '.png'
+        peice = pygame.image.load('images/' + Peice.peice_dict[peice_num] + '.png')
         peice = pygame.transform.scale(peice, (60, 60))
         screen.blit(peice, (60*rank,60*file,30,30))
 
@@ -165,7 +166,8 @@ def draw_peice(peice_num, index):
     rank = int(index%8)
 
     if peice_num != 0:
-        peice = pygame.image.load(Peice.peice_dict[peice_num])
+        directory = 'images/' + Peice.peice_dict[peice_num] + '.png'
+        peice = pygame.image.load('images/' + Peice.peice_dict[peice_num] + '.png')
         peice = pygame.transform.scale(peice, (60, 60))
         screen.blit(peice, (60*rank,60*file,30,30))
 
@@ -182,10 +184,10 @@ def handleMouse():
         rank = int(mouseY/60) + 1
         file = int(mouseX/60) + 1
         index = (8*rank) + file - 9
-        print("click info -> file: ", Board.file_letters[file]," rank: ", int(translate(rank,8,1,1,8))," index: ", index)
+        print("click info -> file: ", Board.file_letters[file]," rank: ", int(translate(rank,8,1,1,8))," index: ", index, end = " ")
         
         if(Board.squares[index] != 0):
-            print("square taken")
+            print("square taken by:", Peice.peice_dict[Board.squares[index]])
         else:
             print("square not taken")
 
